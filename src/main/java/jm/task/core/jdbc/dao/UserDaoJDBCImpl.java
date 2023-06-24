@@ -1,6 +1,6 @@
 package jm.task.core.jdbc.dao;
 
-import com.sun.xml.bind.v2.util.StackRecorder;
+
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
