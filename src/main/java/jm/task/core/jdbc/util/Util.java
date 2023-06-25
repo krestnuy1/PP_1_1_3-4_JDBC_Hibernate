@@ -12,10 +12,13 @@ import org.hibernate.cfg.Configuration;
 
 
 import javax.persistence.Id;
+
 import org.hibernate.query.Query;
+
 import java.io.Serializable;
 import java.sql.*;
 import java.util.List;
+import java.util.stream.IntStream;
 
 
 public class Util {
@@ -56,6 +59,19 @@ public class Util {
         return sessionFactory;
     }
 
+    public Util() {
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            System.out.println("Успешное подключение к базе данных");
+        } catch (SQLException e) {
+            System.out.println("Не удалось подключиться к базе данных");
+        }
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
     public static void saveUser(User user) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = null;
@@ -76,13 +92,14 @@ public class Util {
         }
     }
 
+
     public static void deleteUserById(long Id) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = null;
             try {
                 transaction = session.beginTransaction();
 
-                User user = session.get(User.class, Id );
+                User user = session.get(User.class, Id);
                 if (user != null) {
                     session.delete(user);
                 }
@@ -96,6 +113,7 @@ public class Util {
             }
         }
     }
+
     public static void clearTable(String className) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = null;
@@ -140,17 +158,4 @@ public class Util {
 
     }
 
-
-    public Util() {
-        try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("Успешное подключение к базе данных");
-        } catch (SQLException e) {
-            System.out.println("Не удалось подключиться к базе данных");
-        }
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
 }
