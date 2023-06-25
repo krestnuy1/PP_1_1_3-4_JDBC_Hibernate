@@ -26,7 +26,7 @@ public class Util {
 
     private static final String URL = "jdbc:mysql://localhost:3306/UsersDB";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "Kat$evich!1324";
+    private static final String PASSWORD = "root";
     private static SessionFactory sessionFactory;
     private Connection connection;
 
@@ -38,7 +38,7 @@ public class Util {
             configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
             configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/UsersDB");
             configuration.setProperty("hibernate.connection.username", "root");
-            configuration.setProperty("hibernate.connection.password", "Kat$evich!1324");
+            configuration.setProperty("hibernate.connection.password", "root");
             configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
             configuration.setProperty("hibernate.show_sql", "true");
             configuration.setProperty("hibernate.hbm2ddl.auto", "update");
