@@ -1,7 +1,7 @@
 package jm.task.core.jdbc.util;
 
 
-import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
+
 import jm.task.core.jdbc.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,16 +9,11 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-
-
-import javax.persistence.Id;
-
 import org.hibernate.query.Query;
-
 import java.io.Serializable;
 import java.sql.*;
 import java.util.List;
-import java.util.stream.IntStream;
+
 
 
 public class Util {
@@ -27,7 +22,7 @@ public class Util {
     private static final String URL = "jdbc:mysql://localhost:3306/UsersDB";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root";
-    private static SessionFactory sessionFactory;
+    private static final SessionFactory sessionFactory;
     private Connection connection;
 
     static {
@@ -52,11 +47,6 @@ public class Util {
             throw new ExceptionInInitializerError(ex);
         }
 
-
-    }
-
-    public static SessionFactory getSessionFactory() {
-        return sessionFactory;
     }
 
     public Util() {
@@ -66,6 +56,10 @@ public class Util {
         } catch (SQLException e) {
             System.out.println("Не удалось подключиться к базе данных");
         }
+    }
+
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
     public Connection getConnection() {
