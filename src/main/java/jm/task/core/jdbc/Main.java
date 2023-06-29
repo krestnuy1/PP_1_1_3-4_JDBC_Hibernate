@@ -28,7 +28,7 @@ public class Main {
         List<User> users = userDaoHibernate.getAllUsers();
         users.stream().forEach(System.out::println);
         userDaoHibernate.cleanUsersTable();
-        userDaoHibernate.dropUsersTable();
+
 
 
     }

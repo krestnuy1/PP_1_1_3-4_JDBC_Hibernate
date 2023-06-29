@@ -1,15 +1,19 @@
 package jm.task.core.jdbc.dao;
 
-import com.mysql.cj.Session;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
+import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import static jm.task.core.jdbc.util.Util.sessionFactory;
 
 public class UserDaoHibernateImpl implements UserDao {
 
@@ -54,23 +58,90 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-
         User user = new User(name, lastName, age);
-        Util.saveUser(user);
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
+
+                Serializable generatedId = session.save(user);
+                user.setId((Long) generatedId);
+
+
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void removeUserById(long id) {
-        Util.deleteUserById(id);
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
+
+                User user = session.get(User.class, id);
+                if (user != null) {
+                    session.delete(user);
+                }
+
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public List<User> getAllUsers() {
-        return Util.getAllUsers("User");
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
+                String className = "User";
+                String hql = "FROM " + className;
+                Query<User> query = session.createQuery(hql, User.class);
+                List<User> users = query.getResultList();
+
+                transaction.commit();
+
+                return users;
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     @Override
     public void cleanUsersTable() {
-        Util.clearTable("User");
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
+                String className = "User";
+                String hql = "DELETE FROM " + className;
+                Query<User> query = session.createQuery(hql);
+                query.executeUpdate();
+
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
+            }
+        }
     }
 }

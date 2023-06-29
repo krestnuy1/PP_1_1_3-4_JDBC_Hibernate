@@ -1,28 +1,17 @@
 package jm.task.core.jdbc.util;
 
-
-
-import jm.task.core.jdbc.model.User;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
-import java.io.Serializable;
 import java.sql.*;
-import java.util.List;
-
-
 
 public class Util {
-
 
     private static final String URL = "jdbc:mysql://localhost:3306/UsersDB";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root";
-    private static final SessionFactory sessionFactory;
+    public static final SessionFactory sessionFactory;
     private Connection connection;
 
     static {
@@ -64,92 +53,6 @@ public class Util {
 
     public Connection getConnection() {
         return connection;
-    }
-
-    public static void saveUser(User user) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = null;
-            try {
-                transaction = session.beginTransaction();
-
-                Serializable generatedId = session.save(user);
-                user.setId((Long) generatedId);
-
-
-                transaction.commit();
-            } catch (Exception e) {
-                if (transaction != null) {
-                    transaction.rollback();
-                }
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    public static void deleteUserById(long Id) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = null;
-            try {
-                transaction = session.beginTransaction();
-
-                User user = session.get(User.class, Id);
-                if (user != null) {
-                    session.delete(user);
-                }
-
-                transaction.commit();
-            } catch (Exception e) {
-                if (transaction != null) {
-                    transaction.rollback();
-                }
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void clearTable(String className) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = null;
-            try {
-                transaction = session.beginTransaction();
-
-                String hql = "DELETE FROM " + className;
-                Query<User> query = session.createQuery(hql);
-                query.executeUpdate();
-
-                transaction.commit();
-            } catch (Exception e) {
-                if (transaction != null) {
-                    transaction.rollback();
-                }
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static List<User> getAllUsers(String className) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = null;
-            try {
-                transaction = session.beginTransaction();
-
-                String hql = "FROM " + className;
-                Query<User> query = session.createQuery(hql, User.class);
-                List<User> users = query.getResultList();
-
-                transaction.commit();
-
-                return users;
-            } catch (Exception e) {
-                if (transaction != null) {
-                    transaction.rollback();
-                }
-                e.printStackTrace();
-            }
-        }
-        return null;
-
     }
 
 }
